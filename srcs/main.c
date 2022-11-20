@@ -66,22 +66,30 @@ Elf64_Sym *find_symtab(Elf64_Ehdr* elf_hdr, Elf64_Shdr* sections, char *file, in
     return symtabs;
 }
 
+void *elf64_get_ptr(Elf64_Ehdr *elf, Elf64_Off offset)
+{
+    return (void *)elf + offset;
+}
+
+Elf64_Shdr *elf64_get_section(Elf64_Ehdr *elf, size_t index)
+{
+    return elf64_get_ptr(elf, elf->e_shoff + index * sizeof(Elf64_Shdr));
+}
+
 void process_the_file(char *file)
 {
-//    print_bytes_of_elf_header(file);
     Elf64_Ehdr* elf_hdr = (Elf64_Ehdr*)file;
-//    print_elf_info(elf_hdr);
     Elf64_Shdr* sections = (Elf64_Shdr*)(file + elf_hdr->e_shoff);
     int symtab_index = 0;
     Elf64_Sym *symtabs = find_symtab(elf_hdr, sections, file, &symtab_index);
-//    print_section_info(sections, symtab_index);
+    Elf64_Shdr *string_table_section = elf64_get_section(elf_hdr, sections[symtab_index].sh_link);
+    char *string_table = elf64_get_ptr(elf_hdr, string_table_section->sh_offset);
     int k = 0;
     printf("Names of symtabs: \n");
     while ((k * sections[symtab_index].sh_entsize) < sections[symtab_index].sh_size)
     {
-        unsigned int index = symtabs[k].st_name; //?
-        char *str = ((elf_hdr->e_shstrndx)*elf_hdr->e_shentsize) + index;
-        printf("Name %d: %s\n", k, str);
+        unsigned int index = symtabs[k].st_name;
+        printf("Name %d: %s\n", k, string_table + index);
         k++;
     }
 }
