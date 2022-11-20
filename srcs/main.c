@@ -30,7 +30,7 @@ int process_the_file(char *file)
     Elf64_Ehdr* ehdr = (Elf64_Ehdr*)tmp;
     printf("ELF header size: %lu\n", (unsigned long)ehdr->e_ehsize);
     Elf64_Shdr* section_header = (Elf64_Shdr*)(tmp + ehdr->e_shoff);
-
+    printf("Start of section header: %lu\n", ehdr->e_shoff);
     return 0;
 }
 
