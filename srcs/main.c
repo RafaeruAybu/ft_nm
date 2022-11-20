@@ -18,6 +18,18 @@ void critical(int ret,char *err_str)
 
 int process_the_file(char *file)
 {
+    char *tmp = file;
+    int i = 0;
+    printf("Bytes of elf header: ");
+    while (i < 60)
+    {
+        printf("%#010x ", *(tmp + i));
+        i++;
+    }
+    printf("\n");
+    Elf64_Ehdr* ehdr = (Elf64_Ehdr*)tmp;
+    printf("ELF header size: %lu\n", (unsigned long)ehdr->e_ehsize);
+    Elf64_Shdr* section_header = (Elf64_Shdr*)(tmp + ehdr->e_shoff);
 
     return 0;
 }
@@ -39,7 +51,7 @@ int main(int argc, char **argv)
         critical(3, "Mapping Failed\n");
     }
     close(fd);
-    //make all job here
+
     process_the_file(file);
 
     res = munmap(file, statbuf.st_size);
