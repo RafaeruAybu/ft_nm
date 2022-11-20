@@ -1,5 +1,5 @@
-#include "stdio.h" //printf
-#include "elf.h" //elf headers
+#include <stdio.h> //printf
+#include <elf.h> //elf headers
 #include <fcntl.h> //open
 #include <string.h> //strlen
 #include <stdlib.h> //exit
@@ -16,25 +16,74 @@ void critical_exit(int ret, char *err_str)
     exit(ret);
 }
 
-void process_the_file(char *file)
+void print_bytes_of_elf_header(char *file)
 {
-    char *tmp = file;
     int i = 0;
     printf("Bytes of elf header: ");
     while (i < 60)
     {
-        printf("%#010x ", *(tmp + i));
+        printf("%#010x ", *(file + i));
         i++;
     }
     printf("\n");
-    Elf64_Ehdr* ehdr = (Elf64_Ehdr*)tmp;
-    printf("ELF header size: %lu\n", (unsigned long)ehdr->e_ehsize);
-    printf("Start of section header: %lu\n", ehdr->e_shoff);
-    Elf64_Shdr* section_header = (Elf64_Shdr*)(tmp + ehdr->e_shoff);
-    //iterate over sections until size of the section header, find symtab.
+}
 
-    //iterate over symtable's elements until size of the symtab. And print everything in it.
+void print_elf_info(Elf64_Ehdr* elf_hdr)
+{
+    printf("ELF header size: %lu\n", (unsigned long)elf_hdr->e_ehsize);
+    printf("Start of section header: %lu\n", elf_hdr->e_shoff);
+}
 
+void print_section_info(Elf64_Shdr* sections, int index)
+{
+    printf("Section name: %u\n", sections[index].sh_name);
+    printf("Section type: %u\n", sections[index].sh_type);
+    printf("Section flags: %lu\n", sections[index].sh_flags);
+    printf("Section virtual addr at execution: %lu\n", sections[index].sh_addr);
+    printf("Section file offset: %lu\n", sections[index].sh_offset);
+    printf("Section size in bytes: %lu\n", sections[index].sh_size);
+    printf("Link to another section: %u\n", sections[index].sh_link);
+    printf("Additional section information: %u\n", sections[index].sh_info);
+    printf("Section alignment: %lu\n", sections[index].sh_addralign);
+    printf("Entry size if section holds table: %lu\n", sections[index].sh_entsize);
+}
+
+Elf64_Sym *find_symtab(Elf64_Ehdr* elf_hdr, Elf64_Shdr* sections, char *file, int *symtab_index)
+{
+    Elf64_Sym *symtabs;
+    int i = 0;
+    while (i < elf_hdr->e_shnum)
+    {
+//        printf("Section type: %u\n", sections[i].sh_type);
+        if (sections[i].sh_type == SHT_SYMTAB)
+        {
+            symtabs = (Elf64_Sym *)((char *)file + sections[i].sh_offset);
+            printf("Has found symtab.\n");
+            *symtab_index = i;
+        }
+        i++;
+    }
+    return symtabs;
+}
+
+void process_the_file(char *file)
+{
+//    print_bytes_of_elf_header(file);
+    Elf64_Ehdr* elf_hdr = (Elf64_Ehdr*)file;
+//    print_elf_info(elf_hdr);
+    Elf64_Shdr* sections = (Elf64_Shdr*)(file + elf_hdr->e_shoff);
+    int symtab_index = 0;
+    Elf64_Sym *symtabs = find_symtab(elf_hdr, sections, file, &symtab_index);
+//    print_section_info(sections, symtab_index);
+    int k = 0;
+    printf("Names of symtabs: \n");
+    while ((k * sections[symtab_index].sh_entsize) < sections[symtab_index].sh_size)
+    {
+        unsigned int index = symtabs[k].st_name; //?
+        char *str = ((elf_hdr->e_shstrndx)*elf_hdr->e_shentsize) + index;
+        printf("Name %d: %s\n", k, str);
+        k++;
+    }
 }
 
 int main(int argc, char **argv)
