@@ -10,13 +10,13 @@
 
 #define FILE_PATH "./material/hello_world"
 
-void critical(int ret,char *err_str)
+void critical_exit(int ret, char *err_str)
 {
     write(2, "str", strlen(err_str));
     exit(ret);
 }
 
-int process_the_file(char *file)
+void process_the_file(char *file)
 {
     char *tmp = file;
     int i = 0;
@@ -29,9 +29,9 @@ int process_the_file(char *file)
     printf("\n");
     Elf64_Ehdr* ehdr = (Elf64_Ehdr*)tmp;
     printf("ELF header size: %lu\n", (unsigned long)ehdr->e_ehsize);
-    Elf64_Shdr* section_header = (Elf64_Shdr*)(tmp + ehdr->e_shoff);
     printf("Start of section header: %lu\n", ehdr->e_shoff);
-    return 0;
+    Elf64_Shdr* section_header = (Elf64_Shdr*)(tmp + ehdr->e_shoff);
+
 }
 
 int main(int argc, char **argv)
@@ -39,16 +39,16 @@ int main(int argc, char **argv)
     const char *filepath = FILE_PATH;
     int fd = open(filepath, O_RDONLY);
     if (fd < 0) {
-        critical(1, "Can't open file.\n");
+        critical_exit(1, "Can't open file.\n");
     }
     struct stat statbuf;
     int res = fstat(fd, &statbuf);
     if (res < 0) {
-        critical(1, "Can't open file.\n");
+        critical_exit(1, "Can't open file.\n");
     }
     char *file = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
     if(file == MAP_FAILED) {
-        critical(3, "Mapping Failed\n");
+        critical_exit(3, "Mapping Failed\n");
     }
     close(fd);
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
     res = munmap(file, statbuf.st_size);
     if(res != 0) {
-        critical(4, "UnMapping Failed\n");
+        critical_exit(4, "UnMapping Failed\n");
     }
     return 0;
 }
