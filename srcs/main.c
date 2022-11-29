@@ -12,7 +12,7 @@
 
 void critical_exit(int ret, char *err_str)
 {
-    write(2, "str", strlen(err_str));
+    write(2, err_str, strlen(err_str));
     exit(ret);
 }
 
@@ -89,7 +89,7 @@ void process_the_file(char *file)
     while ((k * sections[symtab_index].sh_entsize) < sections[symtab_index].sh_size)
     {
         unsigned int index = symtabs[k].st_name;
-        printf("Name %d: %s\n", k, string_table + index);
+        printf("Address: %#010x Name: %s\n", symtabs[k].st_value, string_table + index);
         k++;
     }
 }

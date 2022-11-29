@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/rafa/tmp/tmp.hOK8Fyw1Qz
+CMAKE_SOURCE_DIR = /home/rafa/tmp/tmp.yQXNaFKaWp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/rafa/tmp/tmp.hOK8Fyw1Qz/cmake-build-debug-ubun
+CMAKE_BINARY_DIR = /home/rafa/tmp/tmp.yQXNaFKaWp/cmake-build-debug-ubun
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafa/tmp/tmp.hOK8Fyw1Qz/cmake-build-debug-ubun/CMakeFiles /home/rafa/tmp/tmp.hOK8Fyw1Qz/cmake-build-debug-ubun//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafa/tmp/tmp.yQXNaFKaWp/cmake-build-debug-ubun/CMakeFiles /home/rafa/tmp/tmp.yQXNaFKaWp/cmake-build-debug-ubun//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafa/tmp/tmp.hOK8Fyw1Qz/cmake-build-debug-ubun/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rafa/tmp/tmp.yQXNaFKaWp/cmake-build-debug-ubun/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,29 +129,29 @@ ft_nm/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/build
 .PHONY : ft_nm/fast
 
-main.o: main.c.o
-.PHONY : main.o
+srcs/main.o: srcs/main.c.o
+.PHONY : srcs/main.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/main.c.o
-.PHONY : main.c.o
+srcs/main.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/srcs/main.c.o
+.PHONY : srcs/main.c.o
 
-main.i: main.c.i
-.PHONY : main.i
+srcs/main.i: srcs/main.c.i
+.PHONY : srcs/main.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/main.c.i
-.PHONY : main.c.i
+srcs/main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/srcs/main.c.i
+.PHONY : srcs/main.c.i
 
-main.s: main.c.s
-.PHONY : main.s
+srcs/main.s: srcs/main.c.s
+.PHONY : srcs/main.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/main.c.s
-.PHONY : main.c.s
+srcs/main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ft_nm.dir/build.make CMakeFiles/ft_nm.dir/srcs/main.c.s
+.PHONY : srcs/main.c.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ft_nm"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... srcs/main.o"
+	@echo "... srcs/main.i"
+	@echo "... srcs/main.s"
 .PHONY : help
 
 
