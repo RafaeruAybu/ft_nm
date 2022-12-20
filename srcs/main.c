@@ -76,6 +76,12 @@ Elf64_Shdr *elf64_get_section(Elf64_Ehdr *elf, size_t index)
     return elf64_get_ptr(elf, elf->e_shoff + index * sizeof(Elf64_Shdr));
 }
 
+char convert_type_int_to_char(int type_int)
+{
+    char str[] = "ABCDEFGHIGKLMOPQRSTUVWXYZ";
+    return str[type_int];
+}
+
 void process_the_file(char *file)
 {
     Elf64_Ehdr* elf_hdr = (Elf64_Ehdr*)file;
@@ -84,18 +90,23 @@ void process_the_file(char *file)
     Elf64_Sym *symtabs = find_symtab(elf_hdr, sections, file, &symtab_index);
     Elf64_Shdr *string_table_section = elf64_get_section(elf_hdr, sections[symtab_index].sh_link);
     char *string_table = elf64_get_ptr(elf_hdr, string_table_section->sh_offset);
+    
     int k = 0;
     printf("Names of symtabs: \n");
     while ((k * sections[symtab_index].sh_entsize) < sections[symtab_index].sh_size)
     {
-        unsigned int index = symtabs[k].st_name;
-        printf("Address: %#010x Name: %s\n", symtabs[k].st_value, string_table + index);
+        unsigned int str_pos = symtabs[k].st_name;
+        int type_int = (int) ELF32_ST_TYPE(symtabs[k].st_info);
+        char type_char = convert_type_int_to_char(type_int);
+        printf("Address: %#010x Type: %c Name: %s\n", (unsigned int)symtabs[k].st_value, type_char, string_table + str_pos);
         k++;
     }
 }
 
 int main(int argc, char **argv)
 {
+    (void)argc;
+    (void)argv;
     const char *filepath = FILE_PATH;
     int fd = open(filepath, O_RDONLY);
     if (fd < 0) {
@@ -106,6 +117,7 @@ int main(int argc, char **argv)
     if (res < 0) {
         critical_exit(1, "Can't open file.\n");
     }
+
     char *file = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
     if(file == MAP_FAILED) {
         critical_exit(3, "Mapping Failed\n");
